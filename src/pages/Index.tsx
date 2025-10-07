@@ -2,6 +2,8 @@ import { useState } from "react";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { ChatSidebar } from "@/components/ChatSidebar";
 import { ChatArea } from "@/components/ChatArea";
+import { Button } from "@/components/ui/button";
+import { Trash2 } from "lucide-react";
 
 interface Message {
   id: string;
@@ -90,6 +92,18 @@ const Index = () => {
     setActiveThreadId(newThread.id);
   };
 
+  const handleDeleteThread = () => {
+    const updatedThreads = threads.filter((t) => t.id !== activeThreadId);
+    setThreads(updatedThreads);
+    
+    // Switch to first remaining thread or create a new one
+    if (updatedThreads.length > 0) {
+      setActiveThreadId(updatedThreads[0].id);
+    } else {
+      handleNewThread();
+    }
+  };
+
   const handleSendMessage = (content: string) => {
     if (!activeThread) return;
 
@@ -132,11 +146,21 @@ const Index = () => {
           onNewThread={handleNewThread}
         />
         <div className="flex-1 flex flex-col">
-          <header className="h-14 border-b border-border flex items-center px-4 bg-background">
-            <SidebarTrigger />
-            <h1 className="ml-4 font-semibold text-lg">
-              {activeThread?.title || "New Chat"}
-            </h1>
+          <header className="h-14 border-b border-border flex items-center justify-between px-4 bg-background">
+            <div className="flex items-center">
+              <SidebarTrigger />
+              <h1 className="ml-4 font-semibold text-lg">
+                {activeThread?.title || "New Chat"}
+              </h1>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={handleDeleteThread}
+              className="text-muted-foreground hover:text-destructive"
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
           </header>
           <ChatArea
             messages={activeThread?.messages || []}
