@@ -1,5 +1,7 @@
-import { Plus, MessageSquare } from "lucide-react";
+import { Plus, MessageSquare, Search, PenSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { useState } from "react";
 import {
   Sidebar,
   SidebarContent,
@@ -28,37 +30,53 @@ interface ChatSidebarProps {
 
 export function ChatSidebar({ threads, activeThreadId, onThreadSelect, onNewThread }: ChatSidebarProps) {
   const { open } = useSidebar();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredThreads = threads.filter(thread => 
+    thread.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    thread.preview.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <Sidebar className="border-r border-border">
-      <SidebarHeader className="border-b border-sidebar-border p-4">
+    <Sidebar className="border-r border-sidebar-border">
+      <SidebarHeader className="p-3 space-y-2">
+        {open && (
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="pl-9 bg-sidebar-accent border-0 focus-visible:ring-1 focus-visible:ring-sidebar-ring"
+            />
+          </div>
+        )}
+        
         <Button 
           onClick={onNewThread}
-          className="w-full justify-start gap-2 bg-primary text-primary-foreground hover:bg-primary/90"
+          variant="ghost"
+          className="w-full justify-start gap-2 hover:bg-sidebar-accent"
         >
-          <Plus className="h-4 w-4" />
+          <PenSquare className="h-4 w-4" />
           {open && <span>New Chat</span>}
         </Button>
       </SidebarHeader>
 
-      <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Recent Chats</SidebarGroupLabel>
+      <SidebarContent className="px-2">
+        <SidebarGroup className="py-0">
+          {open && <SidebarGroupLabel className="px-2 text-xs">Recent</SidebarGroupLabel>}
           <SidebarGroupContent>
             <SidebarMenu>
-              {threads.map((thread) => (
+              {filteredThreads.map((thread) => (
                 <SidebarMenuItem key={thread.id}>
                   <SidebarMenuButton
                     onClick={() => onThreadSelect(thread.id)}
                     isActive={thread.id === activeThreadId}
-                    className="w-full justify-start gap-2"
+                    className="w-full justify-start gap-3 px-2 py-2 h-auto hover:bg-sidebar-accent rounded-lg"
                   >
                     <MessageSquare className="h-4 w-4 flex-shrink-0" />
                     {open && (
-                      <div className="flex flex-col items-start overflow-hidden">
-                        <span className="truncate text-sm font-medium">{thread.title}</span>
-                        <span className="truncate text-xs text-muted-foreground">{thread.preview}</span>
-                      </div>
+                      <span className="truncate text-sm">{thread.title}</span>
                     )}
                   </SidebarMenuButton>
                 </SidebarMenuItem>

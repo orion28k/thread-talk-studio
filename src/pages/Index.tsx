@@ -29,6 +29,48 @@ const initialThreads: Thread[] = [
       },
     ],
   },
+  {
+    id: "2",
+    title: "Web app in Python",
+    preview: "Building a Flask application...",
+    messages: [],
+  },
+  {
+    id: "3",
+    title: "Landing page text ideas",
+    preview: "Creating compelling copy...",
+    messages: [],
+  },
+  {
+    id: "4",
+    title: "Revise email tone",
+    preview: "Making emails more professional...",
+    messages: [],
+  },
+  {
+    id: "5",
+    title: "QA role in software dev",
+    preview: "Understanding QA responsibilities...",
+    messages: [],
+  },
+  {
+    id: "6",
+    title: "React best practices",
+    preview: "Modern React patterns...",
+    messages: [],
+  },
+  {
+    id: "7",
+    title: "MongoDB connection",
+    preview: "Setting up database...",
+    messages: [],
+  },
+  {
+    id: "8",
+    title: "CSS animations guide",
+    preview: "Creating smooth transitions...",
+    messages: [],
+  },
 ];
 
 const Index = () => {
