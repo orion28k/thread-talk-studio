@@ -15,10 +15,17 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
+interface Message {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+}
+
 interface Thread {
   id: string;
   title: string;
   preview: string;
+  messages: Message[];
 }
 
 interface ChatSidebarProps {
@@ -32,10 +39,14 @@ export function ChatSidebar({ threads, activeThreadId, onThreadSelect, onNewThre
   const { open } = useSidebar();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredThreads = threads.filter(thread => 
-    thread.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    thread.preview.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredThreads = threads.filter(thread => {
+    const query = searchQuery.toLowerCase();
+    return (
+      thread.title.toLowerCase().includes(query) ||
+      thread.preview.toLowerCase().includes(query) ||
+      thread.messages.some(msg => msg.content.toLowerCase().includes(query))
+    );
+  });
 
   return (
     <Sidebar className="border-r border-sidebar-border">
